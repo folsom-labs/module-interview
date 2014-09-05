@@ -11,23 +11,6 @@
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    
-<script src='//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML.js'></script>
-
-<script>
-  MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
-  });
-</script>
-
-<style>
-  dl {width:400px;margin-bottom:4px;}
-  dt {max-width:80px}
-  dt:last-of-type, dd:last-of-type {border-bottom:none;}
-  dd {margin-left:80px;margin-top:-22px;border-bottom:1px solid #EEE;}
-  tr:nth-child(odd){background-color:whitesmoke};
-</style>
-
   </head>
   <body>
     <div class="wrapper">
@@ -48,9 +31,11 @@
         <h2>
 <a name="the-exercise" class="anchor" href="#the-exercise"><span class="octicon octicon-link"></span></a>The Exercise</h2>
 
-<p>In this exercise, you'll implement some of the core math used to model the potential output of a solar panel (called a solar <em>module</em> in the industry).  This represents some of the core math that goes on deep in the process of simulating a solar photovoltaic array.  </p>
+<p>In this exercise, you'll implement some of the core math used to model the potential output of a solar panel (called a solar <em>module</em> in the industry).  This represents some of the core math that goes on deep in the process of simulating a solar photovoltaic array.</p>
 
 <p>This isn't the kind of thing we work on day-to-day (though is based on a problem we've already tackled), our intent with this exercise is not to look for pure algorithmic skill, or to filter for people who love doing math, but simply as an interesting and relevant context to see how you structure and test your code/algorithms.</p>
+
+<p><strong>Target Time:</strong>  1-2 hours</p>
 
 <p><strong>Note:</strong> You shouldn't need any special math knowledge – there's a support section below that should give you all the equations you need. Feel free to ask as many clarification questions about how this all fits together.</p>
 
@@ -63,7 +48,7 @@
 
 <ol>
 <li>
-<p>Create a (python) module with functions that describe a (solar) module. Load the module coefficients for the Trina TSM PA05 from the CSV, set the temperature (T), to 25ºC and the irradiance (S) to 1000 W/m^2. </p>
+<p>Create a (python) module with functions that describe a (solar) module. Load the module coefficients for the Trina TSM PA05 from the CSV, set the temperature (T), to 25ºC and the irradiance (S) to 1000 W/m^2.</p>
 
 <p>This test will pass when you calculate voltage and current matching the correct numerical values along the (solar) module's I/V curve.</p>
 </li>
@@ -87,15 +72,19 @@
 
 <p>Solar modules are generally built using silicon semiconductors (often made at old chip fabs), the same properties that enable chip designers build logic gates, enable sunlight (photons) to knock electrons around, creating electrical current. You don't need to know any of that, though. For this exercise, we just need to know that the equation that defines the output of a particular solar module is:</p>
 
-<p style="font-size:115%">\begin{equation}
-    I= \left. {I_{sc} \cdot S} \middle/ {1000} \right. - I_0(T)\left(e^{\frac{q}{kT\gamma}\left(V+I \cdot R_s\right)}-1\right)-\frac{V+I \cdot R_s}{R_p}
-\end{equation}</p>
+<p>
+\begin{equation}
+    I=\left. {I_{sc} \cdot S} \middle/ {1000} \right. - I_0(T)\left(e^{\frac{q}{kT\gamma}\left(V+I \cdot R_s\right)}-1\right)-\frac{V+I \cdot R_s}{R_p}
+\end{equation}
+</p>
 
 <p>Where, <em>I<sub>0</sub>(T)</em> is a function that adjusts the output of a solar module for the temperature it's operating at. All other things equal, at higher temperatures a module will output at about the same current, but a lower voltage (which is actually caused by the fact that electrons are more free to move around the semiconductor at higher temperatures).  This function is given by:</p>
 
-<p style="font-size:115%">\begin{equation}
+<p>
+\begin{equation}
     I_0(T)=I_0\left(1+\tau\right)^{T-298}
-\end{equation}</p>
+\end{equation}
+</p>
 
 <p>For a given solar module, almost all of the coefficients are pre-determined.  The <strong>Module Parameters</strong> are determined from <a href="http://www.suniva.com/documents/OPTXXX-60-4-1B0%202013%2002%2007.pdf">published specifications</a> to define a the baseline behavior for a specific module.  With the parameters in place, you can plug in the  that ultimately you can plug in the <strong>Environmental Inputs</strong>, for sunlight, <em>S</em> (technically this is called irradiance), and temperature, <em>T</em>.  Finally, you have an equation where the only remaining variables are voltage, <em>V</em>, and current, <em>I</em>,  this equation defines the output curve of a solar panel.</p>
 
@@ -167,6 +156,33 @@
 <p>There are a few interesting points on the curve: <em>I<sub>sc</sub></em> is the short-circuit current, the maximum current a module can output (when there is no voltage); <em>V<sub>oc</sub></em> is the open-circuit voltage, the maximum voltage a module can output (when there is no current output); <em>V<sub>mp</sub></em> and <em>I<sub>mp</sub></em> define the maximum power of the module, the point on the output curve that maximizes the actual power output.  You may recall that power, <em>P</em>, is just voltage time current: ( P = V \cdot I ).</p>
 
 <p><img src="http://www.folsomlabs.com/modeling/modeling/moduleIV.jpg" alt="module IV Curve"></p>
+
+<h4>
+<a name="hints-on-solving-the-formula" class="anchor" href="#hints-on-solving-the-formula"><span class="octicon octicon-link"></span></a>Hints on Solving the Formula</h4>
+
+<p>You may have noticed, that in the above formulation, output current, <em>I</em> is actually a function of both voltage and current.  That is, you can't just plug <em>V</em> in to find <em>I</em> or vice versa.  Fortunately, there's a standard approach for determining the output of the curves at a given point.</p>
+
+<ol>
+<li>
+<p>Define a new quantity, the 'diode voltage', <em>V<sub>diode</sub></em>:</p>
+
+<p>
+\begin{equation}
+   V_{diode} \equiv V + I \cdot R_s \)
+\end{equation}
+</p>
+</li>
+<li>
+<p>Now, substitute this value into equation (1).  With this, you can choose a value of <em>V<sub>diode</sub></em> and determine both current and voltage.</p>
+
+<p>
+\begin{align*}
+I(V_{diode})&amp;=\left. {I_{sc} \cdot S} \middle/ {1000} \right. - I_0(T)\left(e^{\frac{q}{kT\gamma} \cdot V_{diode}}-1\right)-\frac{V_{diode}}{R_p}
+\\V(V_{diode}) &amp;= V_{diode} + I(V_{diode}) \cdot R_s \)
+\end{align*}
+</p>
+</li>
+</ol>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/folsom-labs">folsom-labs</a></p>
