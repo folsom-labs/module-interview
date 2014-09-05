@@ -28,16 +28,7 @@
         </ul>
       </header>
       <section>
-        <div>
-
-  dl {width:400px;margin-bottom:4px;}
-  dt {max-width:80px}
-  dt:last-of-type, dd:last-of-type {border-bottom:none;}
-  dd {margin-left:80px;margin-top:-22px;border-bottom:1px solid #EEE;}
-  tr:nth-child(odd){background-color:whitesmoke};
-</div>
-
-<h2>
+        <h2>
 <a name="the-exercise" class="anchor" href="#the-exercise"><span class="octicon octicon-link"></span></a>The Exercise</h2>
 
 <p>In this exercise, you'll implement some of the core math used to model the potential output of a solar panel (called a solar <strong>module</strong> in the industry).  This represents some of the core math that goes on deep in the process of simulating a solar photovoltaic array.  Our intent with this exercise is not to look for pure algorithmic skill, or to filter for people who love doing math, but simply as an interesting and relevant context to see how you structure and test your code/algorithms.  This isn't the kind of thing we work on day-to-day (though is based on a problem we've already tackled), as such, don't spend a ton of time doing math – there's a support section below that should give you all the equations you need.  Feel free to ask as many clarification questions about how this all fits together.</p>
@@ -47,14 +38,16 @@
 
 <p>In the <a href="https://github.com/folsom-labs/module-interview">exercise repo</a>, we've included a CSV of module files, as well as a test file.  At the end of the day, the goal is to write an implementation of a solar module that makes the tests past.</p>
 
-<p>Our tests are:
-1. Create a (python) module with functions that describe a (solar) module. Load the module coefficients for the Trina TSM     PA05 from the CSV, set the temperature (T), to 25ºC and the irradiance (S) to 1000 W/m^2. 
-2. Make sure your implementation produces accurate results at alternative irradiance and temperature levels.
-3. Usually, we don't just need to understand what the potential output of a solar module is (e.g. the I/V curve), we want to find out what voltage and current the module should be operating at in order to produce the most power.</p>
-
-<p>Write a function/method that determines the voltage and current along a modules I/V curve that maximizes power.  We won't tell you what the answer is, so also write the test that proves you found it.</p>
+<p>Our tests are:</p>
 
 <ol>
+<li>Create a (python) module with functions that describe a (solar) module. Load the module coefficients for the Trina TSM     PA05 from the CSV, set the temperature (T), to 25ºC and the irradiance (S) to 1000 W/m^2. </li>
+<li>Make sure your implementation produces accurate results at alternative irradiance and temperature levels.</li>
+<li>
+<p>Usually, we don't just need to understand what the potential output of a solar module is (e.g. the I/V curve), we want to find out what voltage and current the module should be operating at in order to produce the most power.</p>
+
+<p>Write a function/method that determines the voltage and current along a modules I/V curve that maximizes power.  We won't tell you what the answer is, so also write the test that proves you found it.</p>
+</li>
 <li>
 <p>Write the tests to make sure your algorithm in Task 3 works for a range of module operating conditions and handles trick edge cases correctly.</p>
 
