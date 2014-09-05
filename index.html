@@ -88,7 +88,7 @@
 <p>Solar modules are generally built using silicon semiconductors (often made at old chip fabs), the same properties that enable chip designers build logic gates, enable sunlight (photons) to knock electrons around, creating electrical current. You don't need to know any of that, though. For this exercise, we just need to know that the equation that defines the output of a particular solar module is:</p>
 
 <p style="font-size:110%">\begin{equation}
-    I=I_{sc}\cdot S / 1000 - I_0(T)\left(e^{\frac{q}{kT\gamma}\left(V+I \cdot R_s\right)}-1\right)-\frac{V+I \cdot R_s}{R_p}
+    I=I_{sc}\cdot \frac{S}{1000} - I_0(T)\left(e^{\frac{q}{kT\gamma}\left(V+I \cdot R_s\right)}-1\right)-\frac{V+I \cdot R_s}{R_p}
 \end{equation}</p>
 
 <p>Where, <em>I<sub>0</sub>(T)</em> is a function that adjusts the output of a solar module for the temperature it's operating at. All other things equal, at higher temperatures a module will output at about the same current, but a lower voltage (which is actually caused by the fact that electrons are more free to move around the semiconductor at higher temperatures).  This function is given by:</p>
