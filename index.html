@@ -11,14 +11,6 @@
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <script src='//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML.js'></script>
-    <script>
-      MathJax.Hub.Config({
-        TeX: { equationNumbers: { autoNumber: "AMS" }}
-        tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
-      });
-</script>
-
   </head>
   <body>
     <div class="wrapper">
@@ -39,14 +31,12 @@
         <h2>
 <a name="the-exercise" class="anchor" href="#the-exercise"><span class="octicon octicon-link"></span></a>The Exercise</h2>
 
-<p>In this exercise, you'll implement some of the core math used to model the potential output of a solar panel.  This represents some of the core math that goes on deep in the process of simulating a solar photovoltaic array.  Our intent with this exercise is not to look for pure algorithmic skill, or to filter for people who love doing math, but simply as an interesting and relevant context to see how you structure and test your code/algorithms.</p>
+<p>In this exercise, you'll implement some of the core math used to model the potential output of a solar panel (called a solar <strong>module</strong> by those in the industry).  This represents some of the core math that goes on deep in the process of simulating a solar photovoltaic array.  Our intent with this exercise is not to look for pure algorithmic skill, or to filter for people who love doing math, but simply as an interesting and relevant context to see how you structure and test your code/algorithms.</p>
 
 <h2>
-<a name="the-problem" class="anchor" href="#the-problem"><span class="octicon octicon-link"></span></a>The Problem</h2>
+<a name="context" class="anchor" href="#context"><span class="octicon octicon-link"></span></a>Context</h2>
 
-<p>To determine the electrical output of solar photovoltaic panels (called solar modules in the industry), the standard approach is to use a mathematical formulation based on the <a href="http://en.wikipedia.org/wiki/Diode#Shockley_diode_equation">Shockley Diode Equation</a>.  The specific formulation for a given solar panel is:</p>
-
-<p>The single diode equation is given by:</p>
+<p>To determine the electrical output of solar photovoltaic modules, the standard approach is to use a mathematical formulation based on the <a href="http://en.wikipedia.org/wiki/Diode#Shockley_diode_equation">Shockley Diode Equation</a>.  The specific formulation for a given solar panel is given by:</p>
 
 <p>\begin{equation}
     I=I_{sc}\cdot S - I_0(T)\left(e^{\frac{q}{kTa}\left(V+I \cdot R_s\right)}-1\right)-\frac{V+I \cdot R_s}{R_p}
@@ -58,7 +48,72 @@
     I_0(T)=I_0\left(1+\tau\right)^{T-25}
 \end{equation}</p>
 
-<p>Most of these coefficients are determined from published specifications, so that ultimately you can plug in variables for sunlight, <em>S</em> (technically this is called irradiance), and temperature, <em>T</em>.  Once sunlight and temperature have been plugged voltage (<em>V</em>), and current (<em>I</em>)  are the only remaining factors – so after plugging everything in, this equation defines the output curve of a solar panel.</p>
+<table>
+<tr>
+<th>
+            Module Output
+        </th>
+        <td>
+            <dl>
+<dt>\(I\)</dt>
+<dd>Current supplied by the module</dd>
+                <dt>\(V\)</dt>
+<dd>Voltage supplied by the module</dd>
+            </dl>
+</td>
+    </tr>
+<tr>
+<th>
+            Inputs
+        </th>
+        <td>
+            <dl>
+<dt>\(G\)</dt>
+<dd>Effective Irradiance W/M<sup>2</sup>
+</dd>
+                <dt>\(T_{C}\)</dt>
+<dd>Module (Cell) Temperature, K</dd>
+            </dl>
+</td>
+    </tr>
+<tr>
+<th>
+            Module Parameters
+        </th>
+        <td>
+            <dl>
+<dt>\(I_{PH}(G,T)\)</dt>
+<dd>Photocurrent (e.g. Short-Circuit Current), proportional to G, (Amps)</dd>
+                <dt>\(I_{0}(T)\)</dt>
+<dd> inverse saturation current, depending on the temperature, (Amps)</dd>
+                <dt>\(R_{sh}(G)\)</dt>
+<dd> Shunt Resistance, varies with G, (Ohms)</dd>
+                <dt>\(R_{s}\)</dt>
+<dd> Series Resistance, (Ohms)</dd>
+                <dt>\(\gamma\)</dt>
+<dd> Module quality factor (typically 1-2)</dd>
+                <dt>\(N_{CS}\)</dt>
+<dd>Number of cells in series the module</dd>
+            </dl>
+</td>
+    </tr>
+<tr>
+<th>
+            Physical Constants
+        </th>
+        <td>
+            <dl>
+<dt>\(q\)</dt>
+<dd>Fundamental charge of the electron, 1.602&amp;middot 10<sup>-19</sup> Coulomb</dd>
+                <dt>\(K\)</dt>
+<dd>Boltzmann constant, 1.381&amp;middot 10<sup>-23</sup> J/K)</dd>
+            </dl>
+</td>
+    </tr>
+</table><p>Most of these coefficients are determined from published specifications, so that ultimately you can plug in variables for sunlight, <em>S</em> (technically this is called irradiance), and temperature, <em>T</em>.  Once sunlight and temperature have been plugged voltage (<em>V</em>), and current (<em>I</em>)  are the only remaining factors – so after plugging everything in, this equation defines the output curve of a solar panel.</p>
+
+<h3>
+<a name="putting-it-all-together" class="anchor" href="#putting-it-all-together"><span class="octicon octicon-link"></span></a>Putting it all together</h3>
 
 <p><img src="http://www.folsomlabs.com/modeling/modeling/moduleIV.jpg" alt="module IV Curve"></p>
       </section>
