@@ -11,20 +11,6 @@
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <script src='//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML.js'></script>
-<script>
-                        MathJax.Hub.Config({
-                            TeX: { equationNumbers: { autoNumber: "AMS" }},
-                            tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
-                        });
-</script>
-<style>
-  dl {width:400px;margin-bottom:4px;}
-  dt {max-width:80px}
-  dt:last-of-type, dd:last-of-type {border-bottom:none;}
-  dd {margin-left:80px;margin-top:-22px;border-bottom:1px solid #EEE;}
-  tr:nth-child(odd){background-color:whitesmoke};
-</style>
   </head>
   <body>
     <div class="wrapper">
@@ -42,25 +28,42 @@
         </ul>
       </header>
       <section>
-        <h2>
+        
+  dl {width:400px;margin-bottom:4px;}
+  dt {max-width:80px}
+  dt:last-of-type, dd:last-of-type {border-bottom:none;}
+  dd {margin-left:80px;margin-top:-22px;border-bottom:1px solid #EEE;}
+  tr:nth-child(odd){background-color:whitesmoke};
+<h2>
 <a name="the-exercise" class="anchor" href="#the-exercise"><span class="octicon octicon-link"></span></a>The Exercise</h2>
 
-<p>In this exercise, you'll implement some of the core math used to model the potential output of a solar panel (called a solar <strong>module</strong> by those in the industry).  This represents some of the core math that goes on deep in the process of simulating a solar photovoltaic array.  Our intent with this exercise is not to look for pure algorithmic skill, or to filter for people who love doing math, but simply as an interesting and relevant context to see how you structure and test your code/algorithms.</p>
+<p>In this exercise, you'll implement some of the core math used to model the potential output of a solar panel (called a solar <strong>module</strong> in the industry).  This represents some of the core math that goes on deep in the process of simulating a solar photovoltaic array.  Our intent with this exercise is not to look for pure algorithmic skill, or to filter for people who love doing math, but simply as an interesting and relevant context to see how you structure and test your code/algorithms.  This isn't the kind of thing we work on day-to-day (though is based on a problem we've already tackled), as such, don't spend a ton of time doing math – there's a support section below that should give you all the equations you need.  Feel free to ask as many clarification questions about how this all fits together.</p>
+
+<h3>
+<a name="the-tasks" class="anchor" href="#the-tasks"><span class="octicon octicon-link"></span></a>The tasks</h3>
+
+<p>In the <a href="https://github.com/folsom-labs/module-interview">exercise repo</a>, we've included a CSV of module files, as well as a test file.  At the end of the day, the goal is to write an implementation of a solar module that makes the tests past.</p>
+
+<p>Our tests are:
+    1. Create a (python) module with functions that describe a (solar) module. Load the module coefficients for the Trina TSM     PA05 from the CSV, set the temperature (T), to 25ºC and the irradiance (S) to 1000 W/m^2. 
+        This test will pass when you calculate voltage and current matching the correct numerical values along the (solar) module's I/V curve.</p>
 
 <h2>
 <a name="context" class="anchor" href="#context"><span class="octicon octicon-link"></span></a>Context</h2>
 
-<p>To determine the electrical output of solar photovoltaic modules, the standard approach is to use a mathematical formulation based on the <a href="http://en.wikipedia.org/wiki/Diode#Shockley_diode_equation">Shockley Diode Equation</a>.  The specific formulation for a given solar panel is given by:</p>
+<p>To determine the electrical output of solar photovoltaic modules, the standard approach is to use a mathematical formulation based on the <a href="http://en.wikipedia.org/wiki/Diode#Shockley_diode_equation">Shockley Diode Equation</a>. Basically, solar modules are silicon semiconductors (often made at old chip fabs), the same properties that enable chip designers build logic gates, enables a system where sunlight (photons) can move electrons, creating electrical current. You don't need to know any of that, though, for this exercise, we just need to know that the equation that defines the output of a particular solar module is:</p>
 
 <p>\begin{equation}
-    I=I_{sc}\cdot S - I_0(T)\left(e^{\frac{q}{kTa}\left(V+I \cdot R_s\right)}-1\right)-\frac{V+I \cdot R_s}{R_p}
+    I=I_{sc}\cdot S / 1000 - I_0(T)\left(e^{\frac{q}{kT\gamma}\left(V+I \cdot R_s\right)}-1\right)-\frac{V+I \cdot R_s}{R_p}
 \end{equation}</p>
 
-<p>Here, <em>I<sub>0</sub>(T)</em> is defining a function that causes the output of a solar panel to change slightly as temperature changes (all other things equal, at higher temperatures a module will output at about the same current, but a lower voltage).  This function is given by:</p>
+<p>Where, <em>I<sub>0</sub>(T)</em> is a function that adjusts the output of a solar module for the temperature it's operating at. All other things equal, at higher temperatures a module will output at about the same current, but a lower voltage (which is actually caused by the fact that electrons are more free to move around the semiconductor at higher temperatures).  This function is given by:</p>
 
 <p>\begin{equation}
-    I_0(T)=I_0\left(1+\tau\right)^{T-25}
+    I_0(T)=I_0\left(1+\tau\right)^{T-298}
 \end{equation}</p>
+
+<p>For a given solar module, almost all of the coefficients are pre-determined.  The <strong>Module Parameters</strong> are determined from <a href="http://www.suniva.com/documents/OPTXXX-60-4-1B0%202013%2002%2007.pdf">published specifications</a> to define a the baseline behavior for a specific module.  With the parameters in place, you can plug in the  that ultimately you can plug in the <strong>Environmental Inputs</strong>, for sunlight, <em>S</em> (technically this is called irradiance), and temperature, <em>T</em>.  Finally, you have an equation where the only remaining variables are voltage, <em>V</em>, and current, <em>I</em>,  this equation defines the output curve of a solar panel.</p>
 
 <table>
 <tr>
@@ -78,15 +81,15 @@
     </tr>
 <tr>
 <th>
-            Inputs
+            Environmental Inputs
         </th>
         <td>
             <dl>
-<dt>\(G\)</dt>
-<dd>Effective Irradiance W/M<sup>2</sup>
+<dt>\(S\)</dt>
+<dd>Effective Irradiance (W/M<sup>2)</sup>
 </dd>
                 <dt>\(T_{C}\)</dt>
-<dd>Module (Cell) Temperature, K</dd>
+<dd>Module (Cell) Temperature, (K)</dd>
             </dl>
 </td>
     </tr>
@@ -96,18 +99,16 @@
         </th>
         <td>
             <dl>
-<dt>\(I_{PH}(G,T)\)</dt>
-<dd>Photocurrent (e.g. Short-Circuit Current), proportional to G, (Amps)</dd>
-                <dt>\(I_{0}(T)\)</dt>
-<dd> inverse saturation current, depending on the temperature, (Amps)</dd>
-                <dt>\(R_{sh}(G)\)</dt>
-<dd> Shunt Resistance, varies with G, (Ohms)</dd>
+<dt>\(I_{sc}\)</dt>
+<dd>The short-circuit current, the maximum current a module can output (Amps)</dd>
+                <dt>\(I_{0}\)</dt>
+<dd> inverse saturation current, how much is current reduced as voltage increases (Amps)</dd>
+                <dt>\(R_{p}(G)\)</dt>
+<dd> Parallel resistance in connections within the module (Ohms, \(\Omega)\)</dd>
                 <dt>\(R_{s}\)</dt>
-<dd> Series Resistance, (Ohms)</dd>
+<dd>Series Resistance in connections within the module (Ohms, \(\Omega)\)</dd>
                 <dt>\(\gamma\)</dt>
-<dd> Module quality factor (typically 1-2)</dd>
-                <dt>\(N_{CS}\)</dt>
-<dd>Number of cells in series the module</dd>
+<dd> Module ideality factor, typically 1-2, how round is the curve (dimensionless)</dd>
             </dl>
 </td>
     </tr>
@@ -118,18 +119,17 @@
         <td>
             <dl>
 <dt>\(q\)</dt>
-<dd>Fundamental charge of the electron, 1.602&amp;middot 10<sup>-19</sup> Coulomb</dd>
+<dd>Fundamental charge of the electron, 1.602 · 10<sup>-19</sup> (Coulomb)</dd>
                 <dt>\(K\)</dt>
-<dd>Boltzmann constant, 1.381&amp;middot 10<sup>-23</sup> J/K)</dd>
+<dd>Boltzmann constant, 1.381 · 10<sup>-23</sup> (J/K)</dd>
             </dl>
 </td>
     </tr>
-</table><p>Most of these coefficients are determined from published specifications, so that ultimately you can plug in variables for sunlight, <em>S</em> (technically this is called irradiance), and temperature, <em>T</em>.  Once sunlight and temperature have been plugged voltage (<em>V</em>), and current (<em>I</em>)  are the only remaining factors – so after plugging everything in, this equation defines the output curve of a solar panel.</p>
-
-<h3>
+</table><h3>
 <a name="putting-it-all-together" class="anchor" href="#putting-it-all-together"><span class="octicon octicon-link"></span></a>Putting it all together</h3>
 
-<p><img src="http://www.folsomlabs.com/modeling/modeling/moduleIV.jpg" alt="module IV Curve"></p>
+<p>When you plug in the formulation for a given solar module, you get a curve that looks like this – basically current output decreases as voltage output increases.  There are a few interesting points on the curve: <em>I<sub>sc</sub>) is the short-circuit current, the maximum current a module can output (when there is no voltage output); _V<sub>oc</sub> is the open-circuit voltage, the maximum voltage a module can output (when there is no current output); _V<sub>mp</sub></em> and <em>I<sub>mp</sub></em> define the maximum power point of the module, the point on the output curve that maximizes the actual power output of the panel.  You may recall that power, <em>P</em>, is just voltage time current: (P = V \cdot I ).
+<img src="http://www.folsomlabs.com/modeling/modeling/moduleIV.jpg" alt="module IV Curve"></p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/folsom-labs">folsom-labs</a></p>
