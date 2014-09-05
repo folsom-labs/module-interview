@@ -11,23 +11,6 @@
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
-<script src='//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML.js'></script>
-
-<script>
-  MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
-  });
-</script>
-
-<style>
-  dl {width:400px;margin-bottom:4px;}
-  dt {max-width:80px}
-  dt:last-of-type, dd:last-of-type {border-bottom:none;}
-  dd {margin-left:80px;margin-top:-22px;border-bottom:1px solid #EEE;}
-  tr:nth-child(odd){background-color:whitesmoke};
-</style>
-
   </head>
   <body>
     <div class="wrapper">
@@ -53,13 +36,21 @@
 <h3>
 <a name="the-tasks" class="anchor" href="#the-tasks"><span class="octicon octicon-link"></span></a>The tasks</h3>
 
-<p>In the <a href="https://github.com/folsom-labs/module-interview">exercise repo</a>, we've included a CSV of module files, as well as a test file.  At the end of the day, the goal is to write an implementation of a solar module that makes the tests past.</p>
+<p>In the <a href="https://github.com/folsom-labs/module-interview">exercise repo</a>, we've included a CSV (<code>data.csv</code>) of module files, as well as a test file (<code>tests.py</code>).  The goal is to write an implementation of a solar module that makes the tests past.</p>
 
 <p>Our tests are:</p>
 
 <ol>
-<li>Create a (python) module with functions that describe a (solar) module. Load the module coefficients for the Trina TSM     PA05 from the CSV, set the temperature (T), to 25ºC and the irradiance (S) to 1000 W/m^2. </li>
-<li>Make sure your implementation produces accurate results at alternative irradiance and temperature levels.</li>
+<li>
+<p>Create a (python) module with functions that describe a (solar) module. Load the module coefficients for the Trina TSM PA05 from the CSV, set the temperature (T), to 25ºC and the irradiance (S) to 1000 W/m^2. </p>
+
+<p>This test will pass when you calculate voltage and current matching the correct numerical values along the (solar) module's I/V curve.</p>
+</li>
+<li>
+<p>Make sure your implementation produces accurate results at alternative irradiance and temperature levels.</p>
+
+<p>Here we used an irradiance of 600 W/m^2, and a temperature of 45ºC on the same Trina module as in Task 1.</p>
+</li>
 <li>
 <p>Usually, we don't just need to understand what the potential output of a solar module is (e.g. the I/V curve), we want to find out what voltage and current the module should be operating at in order to produce the most power.</p>
 
@@ -150,8 +141,11 @@
 </table><h3>
 <a name="putting-it-all-together" class="anchor" href="#putting-it-all-together"><span class="octicon octicon-link"></span></a>Putting it all together</h3>
 
-<p>When you plug in the formulation for a given solar module, you get a curve that looks like this – basically current output decreases as voltage output increases.  There are a few interesting points on the curve: <em>I<sub>sc</sub>) is the short-circuit current, the maximum current a module can output (when there is no voltage output); _V<sub>oc</sub> is the open-circuit voltage, the maximum voltage a module can output (when there is no current output); _V<sub>mp</sub></em> and <em>I<sub>mp</sub></em> define the maximum power point of the module, the point on the output curve that maximizes the actual power output of the panel.  You may recall that power, <em>P</em>, is just voltage time current: (P = V \cdot I ).
-<img src="http://www.folsomlabs.com/modeling/modeling/moduleIV.jpg" alt="module IV Curve"></p>
+<p>When you plug in the formulation for a given solar module, you get a curve that looks like this – basically current output decreases as voltage output increases.</p>
+
+<p>There are a few interesting points on the curve: <em>I<sub>sc</sub>)</em> is the short-circuit current, the maximum current a module can output (when there is no voltage); <em>V<sub>oc</sub> is the open-circuit voltage, the maximum voltage a module can output (when there is no current output); _V<sub>mp</sub></em> and <em>I<sub>mp</sub></em> define the maximum power of the module, the point on the output curve that maximizes the actual power output.  You may recall that power, <em>P</em>, is just voltage time current: (P = V \cdot I ).</p>
+
+<p><img src="http://www.folsomlabs.com/modeling/modeling/moduleIV.jpg" alt="module IV Curve"></p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/folsom-labs">folsom-labs</a></p>
