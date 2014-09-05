@@ -28,8 +28,8 @@
         </ul>
       </header>
       <section>
-        <h3>
-<a name="the-exercise" class="anchor" href="#the-exercise"><span class="octicon octicon-link"></span></a>The Exercise</h3>
+        <h2>
+<a name="the-exercise" class="anchor" href="#the-exercise"><span class="octicon octicon-link"></span></a>The Exercise</h2>
 
 <p>In this exercise, you'll implement some of the core math used to model the potential output of a solar panel.  This represents some of the core math that goes on deep in the process of simulating a solar photovoltaic array.  Our intent with this exercise is not to look for pure algorithmic skill, or to filter for people who love doing math, but simply as an interesting and relevant context to see how you structure and test your code/algorithms.</p>
 
@@ -44,8 +44,9 @@
     I=I_{sc}\cdot S - I_0(T)\left(e^{\frac{q}{kTa}\left(V+I \cdot R_s\right)}-1\right)-\frac{V+I \cdot R_s}{R_p}
 \end{equation}</p>
 
-<p>Here, <em>I<sub>0</sub>(T)</em> is defining a function that causes the output of a solar panel to change slightly as temperature changes (all other things equal, at higher temperatures a module will output at about the same current, but a lower voltage).  This function is given by:
-\begin{equation}
+<p>Here, <em>I<sub>0</sub>(T)</em> is defining a function that causes the output of a solar panel to change slightly as temperature changes (all other things equal, at higher temperatures a module will output at about the same current, but a lower voltage).  This function is given by:</p>
+
+<p>\begin{equation}
     I_0(T)=I_0\left(1+\tau\right)^{T-25}
 \end{equation}</p>
 
