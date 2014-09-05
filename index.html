@@ -11,16 +11,12 @@
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    
-    <script type="text/javascript"
-            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-    </script>
   </head>
   <body>
     <div class="wrapper">
       <header>
         <h1>Modeling PV Modules</h1>
-        <p>Folsom Labs Interview</p>
+        <p>Folsom Labs Exercise</p>
 
         <p class="view"><a href="https://github.com/folsom-labs/module-interview">View the Project on GitHub <small>folsom-labs/module-interview</small></a></p>
 
@@ -33,66 +29,29 @@
       </header>
       <section>
         <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+<a name="the-exercise" class="anchor" href="#the-exercise"><span class="octicon octicon-link"></span></a>The Exercise</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>In this exercise, you'll implement some of the core math used to model the potential output of a solar panel.  This represents some of the core math that goes on deep in the process of simulating a solar photovoltaic array.  Our intent with this exercise is not to look for pure algorithmic skill, or to filter for people who love doing math, but simply as an interesting and relevant context to see how you structure and test your code/algorithms.</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+<h2>
+<a name="the-problem" class="anchor" href="#the-problem"><span class="octicon octicon-link"></span></a>The Problem</h2>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-
-<h3>
-<a name="single-diode-model" class="anchor" href="#single-diode-model"><span class="octicon octicon-link"></span></a>Single Diode Model</h3>
-
-<p>The Single-Diode Model is a characterization based around the full-diode equation, with key adjustments to ensure module behavior is accurate across a range of cell-temperatures.</p>
+<p>To determine the electrical output of solar photovoltaic panels (called solar modules in the industry), the standard approach is to use a mathematical formulation based on the <a href="http://en.wikipedia.org/wiki/Diode#Shockley_diode_equation">Shockley Diode Equation</a>.  The specific formulation for a given solar panel is:</p>
 
 <p>The single diode equation is given by:</p>
 
 <p>\begin{equation}
-    I=I_{sc}\cdot S - I_0(T)\left(e^{\frac{q}{kTa}\left(V+IR_s\right)}-1\right)-\frac{V+IR_s}{R_p}
+    I=I_{sc}\cdot S - I_0(T)\left(e^{\frac{q}{kTa}\left(V+I \cdot R_s\right)}-1\right)-\frac{V+I \cdot R_s}{R_p}
 \end{equation}</p>
 
-<p>These parameters can be derived from the published module specifications, leaving only environmental variables (T and S). Typically to solve for this equation we assume the short circuit current is correct, and try to fit appropriate parameters for (R_s), (R_p), (I_0) and (a) based on the published data points (maximum power voltage and current, short-circuit current, and open-circuit voltage).
-</p>
-
-<h4>
-<a name="temperature-adjustment" class="anchor" href="#temperature-adjustment"><span class="octicon octicon-link"></span></a>Temperature Adjustment</h4>
-
-<p>Temperature derating plays a substantial role in module performance: increases in cell temperature have a strong impact on open-circuit voltage (typically -0.37%(^{\circ}C)) for crystalline modules) and a minimal impact on current (0.05%(^{\circ}C)) resulting in a net power impact of -0.5%(^{\circ}C)).  For each module, we calculate a temperature adjustment factor, $\tau$, to the saturation current to provide the desired relationship.</p>
-
-<p>\begin{equation}
+<p>Here, <em>I<sub>0</sub>(T)</em> is defining a function that causes the output of a solar panel to change slightly as temperature changes (all other things equal, at higher temperatures a module will output at about the same current, but a lower voltage).  This function is given by:
+\begin{equation}
     I_0(T)=I_0\left(1+\tau\right)^{T-25}
 \end{equation}</p>
 
-<p>This parameter ignores changes to short circuit current, but ensures that the voltage and power coefficients are consistent with published module specifications for the common range of cell temperatures.</p>
+<p>Most of these coefficients are determined from published specifications, so that ultimately you can plug in variables for sunlight, <em>S</em> (technically this is called irradiance), and temperature, <em>T</em>.  Once sunlight and temperature have been plugged voltage (<em>V</em>), and current (<em>I</em>)  are the only remaining factors – so after plugging everything in, this equation defines the output curve of a solar panel.</p>
 
-<h4>
-<a name="bypass-diodes" class="anchor" href="#bypass-diodes"><span class="octicon octicon-link"></span></a>Bypass Diodes</h4>
-
-<p>Typically modules have 2-3 bypass diodes.  In this model we simulate each module as having only one ‘perfect’ bypass diode – if ever a module cannot produce at the voltage or current required of it, the module has no impact on the system, current passes directly through it.</p>
+<p><img src="http://www.folsomlabs.com/modeling/modeling/moduleIV.jpg" alt="module IV Curve"></p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/folsom-labs">folsom-labs</a></p>
