@@ -11,24 +11,6 @@
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    
-    <script src='//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML.js'></script>
-    
-    <script>
-      MathJax.Hub.Config({
-        TeX: { equationNumbers: { autoNumber: "AMS" }},
-        tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
-      });
-    </script>
-    
-    <style>
-      dl {width:400px;margin-bottom:4px;}
-      dt {max-width:30px}
-      dt:last-of-type, dd:last-of-type {border-bottom:none;}
-      dd {margin-left:30px;margin-top:-22px;border-bottom:1px solid #EEE;}
-      tr:nth-child(odd){background-color:whitesmoke};
-    </style>
-
   </head>
   <body>
     <div class="wrapper">
@@ -62,9 +44,11 @@
 
 <p>In the <a href="https://github.com/folsom-labs/module-interview">exercise repo</a>, we've included a CSV (<code>data.csv</code>) of module files, as well as a test file (<code>tests.py</code>).  The goal is to write an implementation of a solar module that makes the tests pass.</p>
 
-<p>The boilerplate for the tests is in <code>tests.py</code>; to run the tests and see if your implementation is working use:</p>
+<p>The boilerplate for the tests is in <code>tests.py</code>.  To get started and run the tests:</p>
 
-<pre><code>$ python tests.py
+<pre><code>$ git clone https://github.com/folsom-labs/module-interview.git
+$ cd module-interview
+$ python tests.py
 </code></pre>
 
 <p>Our tests are:</p>
@@ -97,7 +81,7 @@
 
 <p>
 \begin{equation}
-    I=\left. {I_{sc} \cdot S} \middle/ {1000} \right. - I_0(T)\left(e^{\frac{q}{kT\gamma}\left(V+I \cdot R_s\right)}-1\right)-\frac{V+I \cdot R_s}{R_p}
+    I=\left. {I_{sc} \cdot S} \middle/ {1000} \right. - I_0(T)\left(e^{\frac{q}{KT\gamma}\left(V+I \cdot R_s\right)}-1\right)-\frac{V+I \cdot R_s}{R_p}
 \end{equation}
 </p>
 
@@ -155,7 +139,8 @@
 <dd>Series Resistance in connections within the module (Ohms, \(\Omega)\)</dd>
                 <dt>\(\gamma\)</dt>
 <dd> Module ideality factor, typically 1-2, how round is the curve (dimensionless)</dd>
-                <dt>\(\tau\)</dt><dd> Temperature coefficient of \(I_{0}\) (dimensionless)</dd>
+                <dt>\(\tau\)</dt>
+<dd> Temperature coefficient of \(I_{0}\) (dimensionless)</dd>
             </dl>
 </td>
     </tr>
@@ -201,7 +186,7 @@
 
 <p>
 \begin{align*}
-I(V_{diode})&amp;=\left. {I_{sc} \cdot S} \middle/ {1000} \right. - I_0(T)\left(e^{\frac{q}{kT\gamma} \cdot V_{diode}}-1\right)-\frac{V_{diode}}{R_p}
+I(V_{diode})&amp;=\left. {I_{sc} \cdot S} \middle/ {1000} \right. - I_0(T)\left(e^{\frac{q}{KT\gamma} \cdot V_{diode}}-1\right)-\frac{V_{diode}}{R_p}
 \\V(V_{diode}) &amp;= V_{diode} - I(V_{diode}) \cdot R_s
 \end{align*}
 </p>
