@@ -2,7 +2,7 @@ import csv
 
 Q = 1.60217657e-19
 K = 1.3806488e-23
-T = 273.
+ZERO_CELSIUS = 273.  # zero celsius, in Kelvin (be careful about units)
 
 
 def calculate_module_current(name, irradiance, temperature, voltage):
