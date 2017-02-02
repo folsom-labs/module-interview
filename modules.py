@@ -5,8 +5,18 @@ K = 1.3806488e-23
 T = 273.
 
 
-def your_code_here(*args, **kwargs):
-    pass
+def calculate_module_current(name, irradiance, temperature, voltage):
+    # your code here
+    current = -1
+    return current
+
+
+def calculate_max_power_point(name, irradiance, temperature):
+    # your code here
+    voltage = -1
+    current = -1
+
+    return (voltage, current)
 
 
 def read_csv(filename, field_names):
@@ -28,6 +38,14 @@ def read_csv(filename, field_names):
 
     return rtn
 
+
+def convert_entry_to_float(val):
+    try:
+        return float(val)
+    except ValueError:
+        return val
+
+
 def get_parameters(name):
     """get the parameters for a solar module
 
@@ -40,8 +58,11 @@ def get_parameters(name):
                    'r_series', 'r_parallel', 'temp_i0']
 
     all_parameters = read_csv('data.csv', field_names)
+    panel = next(x for x in all_parameters if x['name'] == name)
 
-    return next(x for x in all_parameters if x['name'] == name)
+    return {
+        key: convert_entry_to_float(val) for key, val in panel.items()
+    }
 
 if __name__ == '__main__':
     import pprint
