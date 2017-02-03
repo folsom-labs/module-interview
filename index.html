@@ -182,11 +182,11 @@ $ python tests.py
 <h4>
 <a name="hints-on-solving-the-formula" class="anchor" href="#hints-on-solving-the-formula"><span class="octicon octicon-link"></span></a>Hints on Solving the Formula</h4>
 
-<p>You may have noticed, that in the above formulation, output current, <em>I</em> is actually a function of both voltage and current.  That is, you can't just plug <em>V</em> in to find <em>I</em> or vice versa.  Fortunately, there's a standard approach for determining the output of the curves at a given point.</p>
+<p>You may have noticed, that in the above formulation, output current, <em>I</em> is a function of <b>both</b> voltage and current.  That is, you can't just plug <em>V</em> in to find <em>I</em> or vice versa.  Fortunately, there's a standard approach for determining the output of the curves at a given point.</p>
 
 <ol>
 <li>
-<p>Define a new quantity, the 'diode voltage', <em>V<sub>diode</sub></em>:</p>
+<p>If you define a new intermediate variable, the 'diode voltage', <em>V<sub>diode</sub></em>:</p>
 
 <p>
 \begin{equation}
@@ -195,7 +195,7 @@ $ python tests.py
 </p>
 </li>
 <li>
-<p>Now, substitute this value into equation (1).  With this, you can choose a value of <em>V<sub>diode</sub></em> and determine both current and voltage.</p>
+<p>You can, substitute this value into equation (1).  With this, you can choose a value of <em>V<sub>diode</sub></em> and calculate both current and voltage directly - <b>the key is picking the right <em>V<sub>diode</sub></em> that gives you the voltage and the current you're looking for.</b></p>
 
 <p>
 \begin{align*}
