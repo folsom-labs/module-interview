@@ -73,14 +73,9 @@ $ python tests.py
 
 <ol>
 <li>
-<p>Create a (python) module with functions that describe a (solar) module. Load the module coefficients for the Trina TSM PA05 from the CSV, set the temperature (T), to 25ºC and the irradiance (S) to 1000 W/m^2.</p>
+<p>Create a (python) module with functions that describe a (solar) module. Create a function that given a module name, amount of sunlight (irradiance), and a target voltage point, returns the current the solar module will output at that voltage.</p>
 
 <p>This test will pass when you calculate voltage and current matching the correct numerical values along the (solar) module's I/V curve.</p>
-</li>
-<li>
-<p>Make sure your implementation produces accurate results at alternative irradiance and temperature levels.</p>
-
-<p>Here we used an irradiance of 600 W/m^2, and a temperature of 45ºC on the same Trina module as in Task 1.</p>
 </li>
 <li>
 <p>Usually, we don't just need to understand what the potential output of a solar module is (e.g. the I/V curve), we want to find out what voltage and current the module should be operating at in order to produce the most power.</p>
@@ -94,83 +89,56 @@ $ python tests.py
 
 <p>
 \begin{equation}
-    I=\left. {I_{sc} \cdot S} \middle/ {1000} \right. - I^{\prime}_0\left(e^{\frac{q}{KT\gamma}\cdot\left(V+I \cdot R_s\right)}-1\right)-\frac{V+I \cdot R_s}{R_p}
-\end{equation}
-</p>
-
-<p>Where \(I^{\prime}_0\) is a function that adjusts the output of a solar module for the temperature it's operating at. All other things equal, at higher temperatures a module will output at about the same current, but a lower voltage (which is actually caused by the fact that electrons are more free to move around the semiconductor at higher temperatures).  This function is given by:</p>
-
-<p>
-\begin{equation}
-    I^{\prime}_0=I_0\left(1+\tau\right)^{T-298}
+    I=\left. {I_{sc} \cdot S} \middle/ {1000} \right. - A \left(e^{B\cdot\left(V+I \cdot R_s\right)}-1\right)-\frac{V+I \cdot R_s}{R_p}
 \end{equation}
 </p>
 
 <p>For a given solar module, almost all of the coefficients are pre-determined.  The <strong>Module Parameters</strong> are determined from <a href="http://www.suniva.com/documents/OPTXXX-60-4-1B0%202013%2002%2007.pdf">published specifications</a> to define a the baseline behavior for a specific module.  With the parameters in place, you can plug in the  that ultimately you can plug in the <strong>Environmental Inputs</strong>, for sunlight, <em>S</em> (technically this is called irradiance), and temperature, <em>T</em>.  Finally, you have an equation where the only remaining variables are voltage, <em>V</em>, and current, <em>I</em>,  this equation defines the output curve of a solar panel.</p>
 
 <table>
-<tr>
-<th>
-            Module Output
-        </th>
-        <td>
-            <dl>
-<dt>\(I\)</dt>
-<dd>Current supplied by the module</dd>
-                <dt>\(V\)</dt>
-<dd>Voltage supplied by the module</dd>
-            </dl>
-</td>
-    </tr>
-<tr>
-<th>
-            Environmental Inputs
-        </th>
-        <td>
-            <dl>
-<dt>\(S\)</dt>
-<dd>Effective Irradiance (W/M<sup>2)</sup>
-</dd>
-                <dt>\(T_{C}\)</dt>
-<dd>Module (Cell) Temperature, (K)</dd>
-            </dl>
-</td>
-    </tr>
-<tr>
-<th>
-            Module Parameters
-        </th>
-        <td>
-            <dl>
-<dt>\(I_{sc}\)</dt>
-<dd>The short-circuit current, the maximum current a module can output (Amps)</dd>
-                <dt>\(I_{0}\)</dt>
-<dd> inverse saturation current, how much is current reduced as voltage increases (Amps)</dd>
-                <dt>\(R_{p}\)</dt>
-<dd> Parallel resistance in connections within the module (Ohms, \(\Omega)\)</dd>
-                <dt>\(R_{s}\)</dt>
-<dd>Series Resistance in connections within the module (Ohms, \(\Omega)\)</dd>
-                <dt>\(\gamma\)</dt>
-<dd> Module ideality factor, typically 1-2, how round is the curve (dimensionless)</dd>
-                <dt>\(\tau\)</dt>
-<dd> Temperature coefficient of \(I_{0}\) (dimensionless)</dd>
-            </dl>
-</td>
-    </tr>
-<tr>
-<th>
-            Physical Constants
-        </th>
-        <td>
-            <dl>
-<dt>\(q\)</dt>
-<dd>Fundamental charge of the electron, 1.602 · 10<sup>-19</sup> (Coulomb)</dd>
-                <dt>\(K\)</dt>
-<dd>Boltzmann constant, 1.381 · 10<sup>-23</sup> (J/K)</dd>
-            </dl>
-</td>
-    </tr>
-</table><h4>
+  <tr>
+    <th>Module Output</th>
+    <td>
+      <dl>
+        <dt>\(I\)</dt><dd>Current supplied by the module</dd>
+        <dt>\(V\)</dt><dd>Voltage supplied by the module</dd>
+      </dl>
+    </td>
+  </tr>
+  <tr>
+    <th>Environmental Inputs</th>
+    <td>
+      <dl>
+        <dt>\(S\)</dt><dd>Effective Irradiance (W/M<sup>2)</sup></dd>
+        <!-- <dt>\(T_{C}\)</dt><dd>Module (Cell) Temperature, (K)</dd> -->
+      </dl>
+    </td>
+  </tr>
+  <tr>
+    <th>Module Parameters</th>
+    <td>
+      <dl>
+        <dt>\(I_{sc}\)</dt><dd>The short-circuit current, the maximum current a module can output (Amps)</dd>
+        <dt>\(R_{p}\)</dt><dd> Parallel resistance in connections within the module (Ohms, \(\Omega)\)</dd>
+        <dt>\(R_{s}\)</dt><dd>Series Resistance in connections within the module (Ohms, \(\Omega)\)</dd>
+        <dt>\(A\)</dt><dd> inverse saturation current, how much is current reduced as voltage increases (Amps)</dd>
+        <dt>\(B\)</dt><dd> Module ideality factor, typically 1-2, how round is the curve (dimensionless)</dd>
+      </dl>
+    </td>
+  </tr>
+<!--   <tr>
+    <th>Physical Constants</th>
+    <td>
+      <dl>
+        <dt>\(q\)</dt><dd>Fundamental charge of the electron, 1.602 · 10<sup>-19</sup> (Coulomb)</dd>
+        <dt>\(K\)</dt><dd>Boltzmann constant, 1.381 · 10<sup>-23</sup> (J/K)</dd>
+      </dl>
+    </td>
+  </tr>
+ -->
+</table>
+
+<h4>
 <a name="putting-it-all-together" class="anchor" href="#putting-it-all-together"><span class="octicon octicon-link"></span></a>Putting it all together</h4>
 
 <p>When you plug in the formulation for a given solar module, you get a curve that looks like the image below. Basically, current output decreases as voltage output increases.</p>
@@ -182,7 +150,7 @@ $ python tests.py
 <h4>
 <a name="hints-on-solving-the-formula" class="anchor" href="#hints-on-solving-the-formula"><span class="octicon octicon-link"></span></a>Hints on Solving the Formula</h4>
 
-<p>You may have noticed, that in the above formulation, output current, <em>I</em> is a function of <b>both</b> voltage and current.  That is, you can't just plug <em>V</em> in to find <em>I</em> or vice versa.  Fortunately, there's a standard approach for determining the output of the curves at a given point.</p>
+<p>You may have noticed, that in the above formulation, output current, <em>I</em> is not simplfied to be a function just of voltage.  That is, you can't just plug <em>V</em> in to find <em>I</em> or vice versa.  Fortunately, there's a standard approach for determining the output of the curves at a given point.</p>
 
 <ol>
 <li>
@@ -199,7 +167,7 @@ $ python tests.py
 
 <p>
 \begin{align*}
-I&amp;=\left. {I_{sc} \cdot S} \middle/ {1000} \right. - I^{\prime}_0\left(e^{\frac{q}{KT\gamma} \cdot V_{diode}}-1\right)-\frac{V_{diode}}{R_p}
+I&amp;=\left. {I_{sc} \cdot S} \middle/ {1000} \right. - A\left(e^{B \cdot V_{diode}}-1\right)-\frac{V_{diode}}{R_p}
 \\V &amp;= V_{diode} - I \cdot R_s
 \end{align*}
 </p>
